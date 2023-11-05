@@ -1,5 +1,6 @@
 # Реализация методов Рунге-Кутты для решения ОДУ #
 import numpy as np
+from numerical_nonlinear import newton
 
 class explicit_rk:
     def __init__(self, a, b, c):

@@ -2,6 +2,7 @@
 import numpy as np
 from numerical_nonlinear import newton
 
+# Явный метод Рунге-Кутты #
 class explicit_rk:
     def __init__(self, a, b, c):
         # Таблица Бутчера #
@@ -12,19 +13,19 @@ class explicit_rk:
         # Временная сетка #
         t, dt = np.linspace(t0, T, n, retstep=True)
         # Приближенные значения в узлах сетки #
-        y = np.zeros_like(range(n)) ; y[0] = y0
+        y = np.zeros(n) ; y[0] = y0
         # Количество стадий #
         s = len(b)
         # Итерация по временной сетке (j) #
         for j in range(n-1):
             # Смещение стадийной касательной #
-            z = np.zeros_like(range(s))
-            k = np.zeros_like(range(s))
+            z = np.zeros(s)
+            k = np.zeros(s)
             # Итерация по стадиям (i) #
             for i in range(s):
                 # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
                 for l in range(i):
-                    z[i] += dt * a[i,l] * k[l]
+                    z[i] += dt * a[i][l] * k[l]
                 k[i] = f(t[j] + dt * c[i],y[j] + z[i])
             # Смещение приближенного значения #
             dy = 0
@@ -35,6 +36,7 @@ class explicit_rk:
         return (t,y)
 
 
+# Неявный метод Рунге-Кутты #
 class implicit_rk:
     def __init__(self, a, b, c):
         # Таблица Бутчера #
@@ -45,7 +47,7 @@ class implicit_rk:
         # Временная сетка #
         t, dt = np.linspace(t0, T, n, retstep=True)
         # Приближенные значения в узлах сетки #
-        y = np.zeros_like(range(n)) ; y[0] = y0
+        y = np.zeros(n) ; y[0] = y0
         # Количество стадий #
         s = len(b)
         # Итерация по временной сетке (j) #
@@ -53,24 +55,24 @@ class implicit_rk:
             # Смещение стадийной касательной z #
             # Система нелинейных уравнений F(z)=0 #
             def F(z):
-                F = np.array([z[i] for i in range(len(z))])
+                F = [z[i] for i in range(len(z))]
                 # Итерация по стадиям (i) #
                 for i in range(len(z)):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(len(z)):
-                        F[i] -= dt * a[i,l] * f(t[j] + dt * c[l],y[j] + z[l])
-                return F
+                        F[i] -= dt * a[i][l] * f(t[j] + dt * c[l],y[j] + z[l])
+                return np.array(F)
             # Якобиан F(z) #
             def J(z):
-                J = np.array([1 for i in range(len(z))])
+                J = np.identity(len(z))
                 # Итерация по стадиям (i) #
                 for i in range(len(z)):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(len(z)):
-                        J[i] -= dt * a[i,l] * df(t[j] + dt * c[l],y[j] + z[l])
-                return J
+                        J[i][l] -= dt * a[i][l] * df(t[j] + dt * c[l],y[j] + z[l])
+                return np.array(J)
             # Начальное приближение z0 #
-            z0 = [0 for _ in range(s)]
+            z0 = np.zeros(s)
             # Метод Ньютона #
             z = newton(F, J, z0)
             # Смещение приближенного значения #

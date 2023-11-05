@@ -18,16 +18,18 @@ class explicit_rk:
         for j in range(n-1):
             # Смещение стадийной касательной #
             z = np.zeros_like(range(s))
+            k = np.zeros_like(range(s))
             # Итерация по стадиям (i) #
             for i in range(s):
                 # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
                 for l in range(i):
-                    z[i] += dt * a[i,l] * f(t[j] + dt * c[l],y[j] + z[l])
+                    z[i] += dt * a[i,l] * k[l]
+                k[i] = f(t[j] + dt * c[i],y[j] + z[i])
             # Смещение приближенного значения #
             dy = 0
             # Итерация по стадиям (i) #
             for i in range(s):
-                dy += dt * b[i] * f(t[j] + dt * c[i],y[j] + z[i])
+                dy += dt * b[i] * k[i]
             y[j+1] = y[j] + dy
         return (t,y)
 

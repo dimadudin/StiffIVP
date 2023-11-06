@@ -19,19 +19,19 @@ class explicit_rk:
         # Итерация по временной сетке (j) #
         for j in range(n-1):
             # Смещение стадийной касательной #
-            k = [np.zeros_like(y0) for _ in range(s)]
+            k = np.array([np.zeros_like(y0, dtype=np.float64) for _ in range(s)], dtype=np.float64)
             # Смещение приближенного значения #
-            dy = np.zeros_like(y0)
+            dy = np.zeros_like(y0, dtype=np.float64)
             # Итерация по стадиям (i) #
             for i in range(s):
-                zi = np.zeros_like(y0)
+                zi = np.zeros_like(y0, dtype=np.float64)
                 # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
                 for l in range(i):
-                    zi += dt * a[i][l] * k[l]
+                    zi += dt * a[i,l] * k[l]
                 k[i] = f(t[j] + dt * c[i],y[j] + zi)
                 dy += dt * b[i] * k[i]
             y.append(y[j] + dy)
-        return (t,y)
+        return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
 
 
 # Неявный метод Рунге-Кутты #
@@ -53,22 +53,22 @@ class implicit_rk:
             # Смещение стадийной касательной z #
             # Система нелинейных уравнений F(z)=0 #
             def F(z):
-                F = np.array([z[i] for i in range(s)])
+                F = np.array([z[i] for i in range(s)], dtype=np.float64)
                 # Итерация по стадиям (i) #
                 for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(s):
-                        F[i] -= dt * a[i][l] * f(t[j] + dt * c[l],y[j] + z[l])
-                return np.array(F)
+                        F[i] -= dt * a[i,l] * f(t[j] + dt * c[l],y[j] + z[l])
+                return F
             # Якобиан F(z) #
             def J(z):
-                J = np.identity(s)
+                J = np.identity(s, dtype=np.float64)
                 # Итерация по стадиям (i) #
                 for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(s):
-                        J[i][l] -= dt * a[i][l] * df(t[j] + dt * c[l],y[j] + z[l])[i][l]
-                return np.array(J)
+                        J[i][l] -= dt * a[i,l] * df(t[j] + dt * c[l],y[j] + z[l])[i,l]
+                return J
             # Начальное приближение z0 #
             z0 =  np.array([np.zeros_like(y0) for _ in range(s)], dtype=np.float64)
             # Метод Ньютона #
@@ -79,4 +79,4 @@ class implicit_rk:
             for i in range(s):
                 dy += dt * b[i] * f(t[j] + dt * c[i],y[j] + z[i])
             y.append(y[j] + dy)
-        return (t,y)
+        return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))

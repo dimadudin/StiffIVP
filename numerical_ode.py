@@ -13,26 +13,24 @@ class explicit_rk:
         # Временная сетка #
         t, dt = np.linspace(t0, T, n, retstep=True)
         # Приближенные значения в узлах сетки #
-        y = np.zeros(n) ; y[0] = y0
+        y = [y0]
         # Количество стадий #
         s = len(b)
         # Итерация по временной сетке (j) #
         for j in range(n-1):
             # Смещение стадийной касательной #
-            z = np.zeros(s)
-            k = np.zeros(s)
+            k = [np.zeros_like(y0) for _ in range(s)]
+            # Смещение приближенного значения #
+            dy = np.zeros_like(y0)
             # Итерация по стадиям (i) #
             for i in range(s):
+                zi = np.zeros_like(y0)
                 # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
                 for l in range(i):
-                    z[i] += dt * a[i][l] * k[l]
-                k[i] = f(t[j] + dt * c[i],y[j] + z[i])
-            # Смещение приближенного значения #
-            dy = 0
-            # Итерация по стадиям (i) #
-            for i in range(s):
+                    zi += dt * a[i][l] * k[l]
+                k[i] = f(t[j] + dt * c[i],y[j] + zi)
                 dy += dt * b[i] * k[i]
-            y[j+1] = y[j] + dy
+            y.append(y[j] + dy)
         return (t,y)
 
 

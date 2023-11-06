@@ -38,18 +38,24 @@ if __name__ == "__main__":
     c = [1/3,1]
     im_rk3 = implicit_rk(a, b, c)
     # Параметры задачи #
-    t0, T = 0, 1
-    y0 = -0.5
-    f = lambda t,y: np.exp(y)*(1+t)
-    df = lambda t,y: np.exp(y)*(1+t)
-    y_ex = lambda t: -np.log(np.exp(0.5) - t - t**2/2)
+    t0, T = 0, 40
+    y0 = [1,0,0]
+    def f(t,y):
+        return np.array([-0.04*y[0] + 1e4*y[1]*y[2],
+                 0.04*y[0] - 1e4*y[1]*y[2] - 3e7*y[1]**2,
+                                             3e7*y[1]**2])
+    def df(t,y):
+        return np.array([[-0.04,  1e4*y[2],             1e4*y[1]],
+                [ 0.04, -1e4*y[2] - 6e7*y[1], -1e4*y[1]],
+                [    0,             6e7*y[1],         0]])
+    # y_ex = lambda t: -np.log(np.exp(0.5) - t - t**2/2)
     n = 100
     # Решение заданной задачи инициализированным методом #
     t, y = im_rk3(f, df, y0, t0, T, n)
     # Отображение решения #
     plt.figure(layout="constrained")
     plt.plot(t, y, "r-", marker='o', lw=6, alpha=0.6,label="$y$", markersize="4")
-    plt.plot(t, y_ex(t), "b-", marker='.', lw=2, alpha=1,label="$y_t$", markersize="4")
+    # plt.plot(t, y_ex(t), "b-", marker='.', lw=2, alpha=1,label="$y_t$", markersize="4")
     plt.grid(True)
     plt.xlabel("$t$")
     plt.ylabel("$y$")

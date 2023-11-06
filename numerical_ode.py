@@ -53,7 +53,7 @@ class implicit_rk:
             # Смещение стадийной касательной z #
             # Система нелинейных уравнений F(z)=0 #
             def F(z):
-                F = [z[i] for i in range(s)]
+                F = np.array([z[i] for i in range(s)])
                 # Итерация по стадиям (i) #
                 for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
@@ -62,19 +62,19 @@ class implicit_rk:
                 return np.array(F)
             # Якобиан F(z) #
             def J(z):
-                J = np.identity(len(z))
+                J = np.identity(s)
                 # Итерация по стадиям (i) #
-                for i in range(len(z)):
+                for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
-                    for l in range(len(z)):
-                        J[i][l] -= dt * a[i][l] * df(t[j] + dt * c[l],y[j] + z[l])
+                    for l in range(s):
+                        J[i][l] -= dt * a[i][l] * df(t[j] + dt * c[l],y[j] + z[l])[i][l]
                 return np.array(J)
             # Начальное приближение z0 #
-            z0 =  [np.zeros_like(y0) for _ in range(s)]
+            z0 =  np.array([np.zeros_like(y0) for _ in range(s)], dtype=np.float64)
             # Метод Ньютона #
             z = newton(F, J, z0)
             # Смещение приближенного значения #
-            dy = np.zeros_like(y0)
+            dy = np.zeros_like(y0, dtype=np.float64)
             # Итерация по стадиям (i) #
             for i in range(s):
                 dy += dt * b[i] * f(t[j] + dt * c[i],y[j] + z[i])

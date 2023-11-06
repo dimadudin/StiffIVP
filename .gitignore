@@ -1,2 +1,2 @@
-**/__pycache__/
-__pycache__/numerical_ode.cpython-311.pyc
+*.pyc
+__pycache__/

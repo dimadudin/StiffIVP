@@ -45,7 +45,7 @@ class implicit_rk:
         # Временная сетка #
         t, dt = np.linspace(t0, T, n, retstep=True)
         # Приближенные значения в узлах сетки #
-        y = np.zeros(n) ; y[0] = y0
+        y = [y0]
         # Количество стадий #
         s = len(b)
         # Итерация по временной сетке (j) #
@@ -53,11 +53,11 @@ class implicit_rk:
             # Смещение стадийной касательной z #
             # Система нелинейных уравнений F(z)=0 #
             def F(z):
-                F = [z[i] for i in range(len(z))]
+                F = [z[i] for i in range(s)]
                 # Итерация по стадиям (i) #
-                for i in range(len(z)):
+                for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
-                    for l in range(len(z)):
+                    for l in range(s):
                         F[i] -= dt * a[i][l] * f(t[j] + dt * c[l],y[j] + z[l])
                 return np.array(F)
             # Якобиан F(z) #
@@ -70,13 +70,13 @@ class implicit_rk:
                         J[i][l] -= dt * a[i][l] * df(t[j] + dt * c[l],y[j] + z[l])
                 return np.array(J)
             # Начальное приближение z0 #
-            z0 = np.zeros(s)
+            z0 =  [np.zeros_like(y0) for _ in range(s)]
             # Метод Ньютона #
             z = newton(F, J, z0)
             # Смещение приближенного значения #
-            dy = 0
+            dy = np.zeros_like(y0)
             # Итерация по стадиям (i) #
             for i in range(s):
                 dy += dt * b[i] * f(t[j] + dt * c[i],y[j] + z[i])
-            y[j+1] = y[j] + dy
+            y.append(y[j] + dy)
         return (t,y)

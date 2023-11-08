@@ -1,7 +1,7 @@
 # Реализация и отображение решения данных задач #
 import numpy as np
 import matplotlib.pyplot as plt
-from numerical_ode import explicit_rk, implicit_rk
+from numerical_ode import explicit_rk, implicit_rk, plot_R
 
 if __name__ == "__main__":
     # Решение задачи Робертсона явным методом Рунге-Кутта #
@@ -10,6 +10,8 @@ if __name__ == "__main__":
     b = np.array([1/6,2/3,1/6], dtype=np.float64)
     c = np.array([0,1/2,1], dtype=np.float64)
     ex_rk3 = explicit_rk(a, b, c)
+    # Отображение графика оператора перехода и области стабильности метода #
+    plot_R(a, b)
     # Параметры задачи #
     t0, T = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)
@@ -37,6 +39,8 @@ if __name__ == "__main__":
     b = np.array([3/4,1/4], dtype=np.float64)
     c = np.array([1/3,1], dtype=np.float64)
     im_rk3 = implicit_rk(a, b, c)
+    # Отображение графика оператора перехода и области стабильности метода #
+    plot_R(a, b)
     # Параметры задачи #
     t0, T = 0, 40
     y0 = np.array([1,0,0], dtype=np.float64)

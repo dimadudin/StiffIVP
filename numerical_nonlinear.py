@@ -1,5 +1,4 @@
 from numpy.linalg import solve
-import numpy as np
 
 def fixedpoint(g, x0, tol=1.e-8, max_iter=30):
     x = x0

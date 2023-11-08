@@ -1,6 +1,8 @@
 # Реализация методов Рунге-Кутты для решения ОДУ #
 import numpy as np
 from numerical_nonlinear import newton
+from numpy.linalg import det
+import matplotlib.pyplot as plt
 
 # Явный метод Рунге-Кутты #
 class explicit_rk:
@@ -80,3 +82,40 @@ class implicit_rk:
                 dy += dt * b[i] * f(t[j] + dt * c[i],y[j] + z[i])
             y.append(y[j] + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
+    
+def plot_R(a, b):
+    x = np.linspace(-3,3,100)
+    y = np.linspace(-3,3,100)
+    X,Y = np.meshgrid(x,y)
+
+    R = np.identity(len(x), dtype=np.float64)
+    P = np.identity(len(x), dtype=np.float64)
+
+    for i in range(len(x)):
+        for j in range(len(y)):
+            E = np.identity(len(a), dtype=np.float64)
+            EzA = E - (x[i]+y[j]*1j) * a
+            delta = det(EzA)
+            delta1 = det(EzA + (x[i]+y[j]*1j)
+                            * np.outer(np.ones(len(b)), b))
+            P[j][i] = delta1/delta
+            R[j][i] = abs(delta1/delta)
+
+    plt.figure()
+    plt.plot(P)
+    plt.grid()
+    plt.xlabel('Re(z)')
+    plt.ylabel('Im(z)')
+    plt.show()
+
+    plt.figure()
+    plt.contourf(X,Y,R, 1, levels = [0,1])
+    plt.contour(X,Y,R, 1, colors = 'black', levels = [1])
+
+    plt.plot([min(x),max(x)],[0,0], 'k--')
+    plt.plot([0,0],[min(y),max(y)], 'k--')
+ 
+    plt.grid()
+    plt.xlabel('Re(z)')
+    plt.ylabel('Im(z)')
+    plt.show()

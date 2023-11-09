@@ -50,11 +50,11 @@ class rungekutta:
             dy += dt * b[i] * f(tj + dt * c[i],yj + z[i])
         return dy
     # Решение задачи #
-    def __call__(self, dt, iterm="explicit", tol=1e-3):
+    def __call__(self, tol=1e-3):
         y0, t0, tn = self.y0, self.t0, self.tn
-        if iterm == "explicit": method = self.explicit
-        elif iterm == "implicit": method = self.implicit
-        else: return ("kys","fag")
+        if self.a[0][0] == 0.: method = self.explicit
+        else: method = self.implicit
+        dt = tol**(1/self.p)
         t, y = [t0], [y0]
         while(t[-1] < tn):
             tj, yj = t[-1], y[-1]
@@ -66,7 +66,7 @@ class rungekutta:
             if err <= tol:
                 t.append(tj + dt)
                 y.append(yj + dy_)
-                dt = min(dt*min(5.0, max(5.e-4, 0.8*(tol/err)**(1/(self.p)))), abs(tn-t0))
+                dt = min(dt*min(5.0, max(5.e-4, 0.8*(tol/err)**(1/self.p))), abs(tn-t0))
             else: dt = dt_
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
     # Отображение области устойчивости метода #

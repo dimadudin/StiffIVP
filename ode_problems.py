@@ -1,13 +1,20 @@
 from numerical_ode import rungekutta
 import numpy as np
-
-def rk3_test(method):
-    # # Решение тестового уравнения явным методом Рунге-Кутта #
-    # Явный метод Рунге-Кутта 3-го порядка с адаптивным временным шагом #
-    a = np.array([[0,0,0],[1/2,0,0],[-1,2,0]], dtype=np.float64)
-    b = np.array([1/6,2/3,1/6], dtype=np.float64)
-    c = np.array([0,1/2,1], dtype=np.float64)
-    p = 3.
+# Решение тестового уравнения явным методом Рунге-Кутта #
+def rk3_test(method="ex rk 3"):
+    # Параметры метода #
+    if method == "ex rk 3":
+        a = np.array([[0,0,0],[1/2,0,0],[-1,2,0]], dtype=np.float64)
+        b = np.array([1/6,2/3,1/6], dtype=np.float64)
+        c = np.array([0,1/2,1], dtype=np.float64)
+        p = 3.
+        mtd = "explicit"
+    elif method == "radau2a":
+        a = np.array([[5/12,-1/12],[3/4,1/4]], dtype=np.float64)
+        b = np.array([3/4,1/4], dtype=np.float64)
+        c = np.array([1/3,1], dtype=np.float64)
+        p = 3.
+        mtd = "implicit"
     ex_rk3 = rungekutta(a, b, c, p)
     # Отображение графика оператора перехода и области стабильности метода #
     ex_rk3.plot_R()
@@ -16,21 +23,27 @@ def rk3_test(method):
     t0, tn = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)
     f = lambda t,y: np.exp(y)*(1+t)
-    ex_rk3.init_problem(f, y0, t0, tn)
+    df = lambda t,y: np.exp(y)*(1+t)
+    ex_rk3.init_problem(f, y0, t0, tn, df)
     # Решение заданной задачи инициализированным методом #
-    t, y = ex_rk3(0.01, method)
+    t, y = ex_rk3(0.01, mtd)
     # Отображение решения #
     ex_rk3.plot_Y(t, y)
     # Отображение изменения временных шагов #
     ex_rk3.plot_T(t)
-    # Мета данные процесса приближения #
-def robertson():
-    # Решение задачи Робертсона Неявным методом Рунге-Кутта #
-    # метод Радо IIA с адаптивным временным шагом #
-    a = np.array([[5/12,-1/12],[3/4,1/4]], dtype=np.float64)
-    b = np.array([3/4,1/4], dtype=np.float64)
-    c = np.array([1/3,1], dtype=np.float64)
-    p = 3.
+def robertson(method="ex rk 3"):
+    if method == "ex rk 3":
+        a = np.array([[0,0,0],[1/2,0,0],[-1,2,0]], dtype=np.float64)
+        b = np.array([1/6,2/3,1/6], dtype=np.float64)
+        c = np.array([0,1/2,1], dtype=np.float64)
+        p = 3.
+        mtd = "explicit"
+    elif method == "radau2a":
+        a = np.array([[5/12,-1/12],[3/4,1/4]], dtype=np.float64)
+        b = np.array([3/4,1/4], dtype=np.float64)
+        c = np.array([1/3,1], dtype=np.float64)
+        p = 3.
+        mtd = "implicit"
     im_rk3 = rungekutta(a, b, c, p)
     # Отображение графика оператора перехода и области стабильности метода #
     im_rk3.plot_R()
@@ -49,9 +62,8 @@ def robertson():
                              0 +            6e7*y[1] +        0], dtype=np.float64)
     im_rk3.init_problem(f, y0, t0, tn, df)
     # Решение заданной задачи инициализированным методом #
-    t, y = im_rk3(0.0005, "implicit")
+    t, y = im_rk3(0.0005, mtd)
     # Отображение решения #
     im_rk3.plot_Y(t, y)
     # Отображение изменения временных шагов #
-
-    # Мета данные процесса приближения #
+    im_rk3.plot_T(t)

@@ -4,7 +4,7 @@ from numerical_nonlinear import newton
 from numpy.linalg import det, norm
 import matplotlib.pyplot as plt
 
-# Явный метод Рунге-Кутты #
+# методы Рунге-Кутты #
 class rungekutta:
     # Инициальизация метода #
     def __init__(self, a, b, c, p):
@@ -128,7 +128,6 @@ class rungekutta:
         plt.show()
     # Отображение временной сетки #
     def plot_T(self, t):
-
         newparams = {'axes.grid': True,
                 'lines.markersize': 8, 'lines.linewidth': 2,
                 'font.size': 14}

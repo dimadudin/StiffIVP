@@ -6,33 +6,31 @@ import matplotlib.pyplot as plt
 
 # Явный метод Рунге-Кутты #
 class explicit_rk:
+    # Инициальизация метода #
     def __init__(self, a, b, c):
         # Параметры метода #
         self.a, self.b, self.c, self.s = a, b, c, len(b)
+    # Инициализация задачи #
     def init_problem(self, f, y0, t0, tn):
         # Параметры задачи #
         self.f, self.y0, self.t0, self.tn = f, y0, t0, tn
+    # Итериция явного метода #
     def explicit(self, tj, yj, dt):
         a, b, c, s = self.a, self.b, self.c, self.s
         f = self.f
-        # Смещение стадийной касательной #
         k = np.array([np.zeros_like(yj, dtype=np.float64) for _ in range(s)], dtype=np.float64)
-        # Смещение приближенного значения #
         dy = np.zeros_like(yj, dtype=np.float64)
-        # Итерация по стадиям (i) #
         for i in range(s):
             zi = np.zeros_like(yj, dtype=np.float64)
-            # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
             for l in range(i):
                 zi += dt * a[i,l] * k[l]
             k[i] = f(tj + dt * c[i],yj + zi)
             dy += dt * b[i] * k[i]
         return dy
-
+    # Решение задачи #
     def __call__(self, dt):
         y0, t0, tn = self.y0, self.t0, self.tn
         t, y = [t0], [y0]
-        # Итерация по временной сетке (j) #
         while(t[-1] < tn):
             tj, yj = t[-1], y[-1]
             dy = self.explicit(tj, yj, dt)

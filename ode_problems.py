@@ -2,7 +2,7 @@ from numerical_ode import rungekutta
 import numpy as np
 import time
 # Решение тестового уравнения явным методом Рунге-Кутта #
-def rk3_test(method='rkm3', tol=1e-3):
+def rk3_test(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
     # Параметры метода #
     eh = butcher_tables[method]
     rk = rungekutta(eh['a'], eh['b'], eh['c'], eh['p'])
@@ -16,7 +16,7 @@ def rk3_test(method='rkm3', tol=1e-3):
     df = lambda t,y: np.exp(y)*(1+t)
     rk.init_problem(f, y0, t0, tn, df)
     # Задание уровня точности #
-    rk.set_tol(tol)
+    rk.init_iter(tol, dtmin, dtmax)
     st = time.time()
     # Решение заданной задачи инициализированным методом #
     t, y = rk()
@@ -26,7 +26,7 @@ def rk3_test(method='rkm3', tol=1e-3):
     rk.plot_Y(t, y)
     # Отображение изменения временных шагов #
     rk.plot_T(t)
-def robertson(method='rkm3', tol=1e-3):
+def robertson(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
     # Параметры метода #
     eh = butcher_tables[method]
     rk = rungekutta(eh['a'], eh['b'], eh['c'], eh['p'])
@@ -47,7 +47,7 @@ def robertson(method='rkm3', tol=1e-3):
                              0 +            6e7*y[1] +        0], dtype=np.float64)
     rk.init_problem(f, y0, t0, tn, df)
     # Задание уровня точности #
-    rk.set_tol(tol)
+    rk.init_iter(tol, dtmin, dtmax)
     st = time.time()
     # Решение заданной задачи инициализированным методом #
     t, y = rk()
@@ -57,7 +57,7 @@ def robertson(method='rkm3', tol=1e-3):
     rk.plot_Y(t, y)
     # Отображение изменения временных шагов #
     rk.plot_T(t)
-def brunner(method='rkm3', tol=1e-3):
+def brunner(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
     # Параметры метода #
     eh = butcher_tables[method]
     rk = rungekutta(eh['a'], eh['b'], eh['c'], eh['p'])
@@ -78,7 +78,7 @@ def brunner(method='rkm3', tol=1e-3):
                                      2.5e3*y[2]                    - 2.5e3*y[0]], dtype=np.float64)
     rk.init_problem(f, y0, t0, tn, df)
     # Задание уровня точности #
-    rk.set_tol(tol)
+    rk.init_iter(tol, dtmin, dtmax)
     st = time.time()
     # Решение заданной задачи инициализированным методом #
     t, y = rk()

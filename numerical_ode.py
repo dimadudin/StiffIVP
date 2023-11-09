@@ -14,8 +14,10 @@ class rungekutta:
     def init_problem(self, f, y0, t0, tn, df=None):
         # Параметры задачи #
         self.f, self.y0, self.t0, self.tn, self.df = f, y0, t0, tn, df
-    def set_tol(self, tol=1e-3):
-        self.tol = tol
+    # Инициализация итерации #
+    def init_iter(self, tol=1e-3, dtmin=5.10-6, dtmax=5.0):
+        # Параметры итерации #
+        self.tol, self.dtmin, self.dtmax = tol, dtmin, dtmax
     # Итериция явного метода #
     def explicit(self, tj, yj, dt):
         a, b, c, s = self.a, self.b, self.c, self.s
@@ -54,7 +56,7 @@ class rungekutta:
     # Решение задачи #
     def __call__(self):
         y0, t0, tn = self.y0, self.t0, self.tn
-        tol = self.tol
+        tol, dtmin, dtmax = self.tol, self.dtmin, self.dtmax
         if self.a[0][0] == 0.: method = self.explicit
         else: method = self.implicit
         dt = tol**(1/self.p)
@@ -69,8 +71,7 @@ class rungekutta:
             if err <= tol:
                 t.append(tj + dt)
                 y.append(yj + dy_)
-                dt = min(dt*min(5.0, max(5.e-4, 0.8*(tol/err)**(1/self.p))), abs(tn-t0))
-            else: dt = dt_
+            dt = min(dt*min(dtmax, max(dtmin, 0.8*(tol/err)**(1/self.p))), abs(tn-t0))
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
     # Отображение области устойчивости метода #
     def plot_R(self, x=np.linspace(-3,3,121), y=np.linspace(-3,3,121)):

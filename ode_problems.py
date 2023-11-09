@@ -2,7 +2,7 @@ from numerical_ode import rungekutta
 import numpy as np
 import time
 # Решение тестового уравнения явным методом Рунге-Кутта #
-def rk3_test(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
+def rk3_test(method='rkm3', tol=1e-3, dtmin=5.e-6, dtmax=5.0):
     # Параметры метода #
     eh = butcher_tables[method]
     rk = rungekutta(eh['a'], eh['b'], eh['c'], eh['p'])
@@ -26,7 +26,7 @@ def rk3_test(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
     rk.plot_Y(t, y)
     # Отображение изменения временных шагов #
     rk.plot_T(t)
-def robertson(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
+def robertson(method='rkm3', tol=1e-3, dtmin=5.e-6, dtmax=5.0):
     # Параметры метода #
     eh = butcher_tables[method]
     rk = rungekutta(eh['a'], eh['b'], eh['c'], eh['p'])
@@ -57,7 +57,7 @@ def robertson(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
     rk.plot_Y(t, y)
     # Отображение изменения временных шагов #
     rk.plot_T(t)
-def brunner(method='rkm3', tol=1e-3, dtmin=5.10-6, dtmax=5.0):
+def brunner(method='rkm3', tol=1e-3, dtmin=5.e-6, dtmax=5.0):
     # Параметры метода #
     eh = butcher_tables[method]
     rk = rungekutta(eh['a'], eh['b'], eh['c'], eh['p'])

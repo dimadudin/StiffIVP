@@ -15,7 +15,7 @@ class rungekutta:
         # Параметры задачи #
         self.f, self.y0, self.t0, self.tn, self.df = f, y0, t0, tn, df
     # Инициализация итерации #
-    def init_iter(self, tol=1e-3, dtmin=5.10-6, dtmax=5.0):
+    def init_iter(self, tol=1e-3, dtmin=5.e-6, dtmax=5.0):
         # Параметры итерации #
         self.tol, self.dtmin, self.dtmax = tol, dtmin, dtmax
     # Итериция явного метода #

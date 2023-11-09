@@ -9,7 +9,7 @@ def fixedpoint(g, x0, tol=1.e-8, max_iter=30):
         # if abs(x-x_old) < tol: break
     return x
 
-def newton(f, j, x0, tol = 1.e-8, maxit=100):
+def newton(f, j, x0, tol = 1.e-8, maxit=10):
     x = x0
     for _ in range(maxit):
         fx = f(x)

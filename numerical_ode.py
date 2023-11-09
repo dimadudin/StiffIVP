@@ -1,7 +1,7 @@
 # Реализация методов Рунге-Кутты для решения ОДУ #
 import numpy as np
 from numerical_nonlinear import newton
-from numpy.linalg import det
+from numpy.linalg import det, norm
 import matplotlib.pyplot as plt
 
 # Явный метод Рунге-Кутты #
@@ -50,16 +50,25 @@ class rungekutta:
             dy += dt * b[i] * f(tj + dt * c[i],yj + z[i])
         return dy
     # Решение задачи #
-    def __call__(self, dt, iterm="explicit"):
+    def __call__(self, dt, iterm="explicit", tol=1e-5):
         y0, t0, tn = self.y0, self.t0, self.tn
+        if iterm == "explicit": method = self.explicit
+        elif iterm == "implicit": method = self.implicit
+        else: return ("kys","fag")
         t, y = [t0], [y0]
         while(t[-1] < tn):
             tj, yj = t[-1], y[-1]
-            if iterm == "explicit": dy = self.explicit(tj, yj, dt)
-            elif iterm == "implicit": dy = self.implicit(tj, yj, dt)
-            else: return ("kys","fag")
-            t.append(tj + dt)
-            y.append(yj + dy)
+            dy = method(tj, yj, dt)
+            dt_ = 0.5 * dt
+            dy_ = method(tj, yj, dt_)
+            dy_ += method(tj + dt_, yj + dy_, dt_)
+            err = norm(dy - dy_)
+            if err <= tol:
+                t.append(tj + dt)
+                y.append(yj + dy_)
+                dt = min(1.2*dt, abs(tn-t0))
+            else: dt = dt_
+
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
     
 def plot_R(a, b):

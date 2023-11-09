@@ -72,12 +72,12 @@ if __name__ == "__main__":
     # Отображение графика оператора перехода и области стабильности метода #
     plot_R(a, b)
     # Параметры задачи #
-    t0, tn = 0, 16
+    t0, tn = 0, 40
     y0 = np.array([1,0,0], dtype=np.float64)
     def f(t,y):
         f = np.array([-0.04*y[0] + 1e4*y[1]*y[2],
-                          0.04*y[0] - 1e4*y[1]*y[2] - 3e7*y[1]**2,
-                                                      3e7*y[1]**2], dtype=np.float64)
+                       0.04*y[0] - 1e4*y[1]*y[2] - 3e7*y[1]*y[1],
+                                                   3e7*y[1]*y[1]], dtype=np.float64)
         return f
     def df(t,y):
         return np.array([-0.04 + 1e4*y[2] +            1e4*y[1] +
@@ -85,7 +85,7 @@ if __name__ == "__main__":
                              0 +            6e7*y[1] +        0], dtype=np.float64)
     im_rk3.init_problem(f, y0, t0, tn, df)
     # Решение заданной задачи инициализированным методом #
-    t, y = im_rk3(0.001, "implicit")
+    t, y = im_rk3(0.0006, "implicit")
     # Отображение решения #
     plt.figure(layout="constrained")
     plt.plot(t, y[:,0], "r-", marker='.', lw=2, alpha=0.6,label="$y_1$", markersize="4")

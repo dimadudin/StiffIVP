@@ -58,22 +58,22 @@ class implicit_rk:
             # Смещение стадийной касательной z #
             # Система нелинейных уравнений F(z)=0 #
             def F(z):
-                F = np.array([z[i] for i in range(s)], dtype=np.float64)
+                f_ = np.array([z[i] for i in range(s)], dtype=np.float64)
                 # Итерация по стадиям (i) #
                 for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(s):
-                        F[i] -= dt * a[i,l] * f(t[j] + dt * c[l],y[j] + z[l])
-                return F
+                        f_[i] -= dt * a[i,l] * f(t[j] + dt * c[l],y[j] + z[l])
+                return f_
             # Якобиан F(z) #
             def J(z):
-                J = np.identity(s, dtype=np.float64)
+                j_ = np.identity(s, dtype=np.float64)
                 # Итерация по стадиям (i) #
                 for i in range(s):
                     # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(s):
-                        J[i][l] -= dt * a[i,l] * df(t[j] + dt * c[l],y[j] + z[l])[i,l]
-                return J
+                        j_[i][l] -= dt * a[i,l] * df(t[j] + dt * c[i],y[j] + z[l])
+                return j_
             # Начальное приближение z0 #
             z0 =  np.array([np.zeros_like(y0) for _ in range(s)], dtype=np.float64)
             # Метод Ньютона #

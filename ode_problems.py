@@ -12,18 +12,17 @@ def rk3_test(method):
     # Отображение графика оператора перехода и области стабильности метода #
     ex_rk3.plot_R()
     ex_rk3.plot_P()
-    # Параметры задачи #
+    # Постановка задачи #
     t0, tn = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)
     f = lambda t,y: np.exp(y)*(1+t)
     ex_rk3.init_problem(f, y0, t0, tn)
-    y_ex = lambda t: -np.log(np.exp(0.5) - t - t**2/2)
     # Решение заданной задачи инициализированным методом #
     t, y = ex_rk3(0.01, method)
     # Отображение решения #
     ex_rk3.plot_Y(t, y)
     # Отображение изменения временных шагов #
-
+    ex_rk3.plot_T(t)
     # Мета данные процесса приближения #
 def robertson():
     # Решение задачи Робертсона Неявным методом Рунге-Кутта #
@@ -37,7 +36,7 @@ def robertson():
     im_rk3.plot_R()
     im_rk3.plot_P()
     # Параметры задачи #
-    t0, tn = 0, 5
+    t0, tn = 0, 40
     y0 = np.array([1,0,0], dtype=np.float64)
     def f(t,y):
         f = np.array([-0.04*y[0] + 1e4*y[1]*y[2],
@@ -50,7 +49,7 @@ def robertson():
                              0 +            6e7*y[1] +        0], dtype=np.float64)
     im_rk3.init_problem(f, y0, t0, tn, df)
     # Решение заданной задачи инициализированным методом #
-    t, y = im_rk3(0.0006, "implicit")
+    t, y = im_rk3(0.0005, "implicit")
     # Отображение решения #
     im_rk3.plot_Y(t, y)
     # Отображение изменения временных шагов #

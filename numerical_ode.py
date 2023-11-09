@@ -121,9 +121,23 @@ class rungekutta:
         plt.rcParams.update(newparams)
         plt.figure()
         for i in range(len(y[0])):
-            aaaaaaaaaaaaaa = y[:,i]
             plt.plot(t, y[:,i], marker='.', label=f'$y_{i+1}$')
         plt.xlabel("$t$")
         plt.ylabel("$y$")
         plt.legend(loc='best', frameon=False)
         plt.show()
+    # Отображение временной сетки #
+    def plot_T(self, t):
+
+        newparams = {'axes.grid': True,
+                'lines.markersize': 8, 'lines.linewidth': 2,
+                'font.size': 14}
+        plt.rcParams.update(newparams)
+        plt.figure()
+        delta = np.diff(t)
+        plt.plot(delta, marker='.')
+        plt.xlabel("$i$")
+        plt.ylabel(f'$\Delta t$')
+        plt.show()
+        print(f'Количество выполненых шагов = {len(delta)}')
+        print(f'Наименьший шаг = {min(delta)}, Наибольший шаг = {max(delta)}')

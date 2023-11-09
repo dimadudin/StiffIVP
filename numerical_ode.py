@@ -9,6 +9,22 @@ class explicit_rk:
     def __init__(self, a, b, c):
         # Таблица Бутчера #
         self.a, self.b, self.c = a, b, c
+    def explicit(self, tj, yj, f, dt, s):
+        a, b, c = self.a, self.b, self.c
+        # Смещение стадийной касательной #
+        k = np.array([np.zeros_like(yj, dtype=np.float64) for _ in range(s)], dtype=np.float64)
+        # Смещение приближенного значения #
+        dy = np.zeros_like(yj, dtype=np.float64)
+        # Итерация по стадиям (i) #
+        for i in range(s):
+            zi = np.zeros_like(yj, dtype=np.float64)
+            # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
+            for l in range(i):
+                zi += dt * a[i,l] * k[l]
+            k[i] = f(tj + dt * c[i],yj + zi)
+            dy += dt * b[i] * k[i]
+        return dy
+
     def __call__(self, f, y0, t0, T, n):
         # Таблица Бутчера #
         a, b, c = self.a, self.b, self.c
@@ -20,18 +36,7 @@ class explicit_rk:
         s = len(b)
         # Итерация по временной сетке (j) #
         for j in range(n-1):
-            # Смещение стадийной касательной #
-            k = np.array([np.zeros_like(y0, dtype=np.float64) for _ in range(s)], dtype=np.float64)
-            # Смещение приближенного значения #
-            dy = np.zeros_like(y0, dtype=np.float64)
-            # Итерация по стадиям (i) #
-            for i in range(s):
-                zi = np.zeros_like(y0, dtype=np.float64)
-                # Итерация по предыдущим (т.к. явный метод) стадиям (l) #
-                for l in range(i):
-                    zi += dt * a[i,l] * k[l]
-                k[i] = f(t[j] + dt * c[i],y[j] + zi)
-                dy += dt * b[i] * k[i]
+            dy = self.explicit(t[j], y[j], f, dt, s)
             y.append(y[j] + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
 

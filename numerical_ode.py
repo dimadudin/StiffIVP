@@ -41,49 +41,45 @@ class explicit_rk:
 
 # Неявный метод Рунге-Кутты #
 class implicit_rk:
+   # Инициальизация метода #
     def __init__(self, a, b, c):
-        # Таблица Бутчера #
-        self.a, self.b, self.c = a, b, c
-    def __call__(self, f, df, y0, t0, T, n):
-        # Таблица Бутчера #
-        a, b, c = self.a, self.b, self.c
-        # Временная сетка #
-        t, dt = np.linspace(t0, T, n, retstep=True)
-        # Приближенные значения в узлах сетки #
-        y = [y0]
-        # Количество стадий #
-        s = len(b)
-        # Итерация по временной сетке (j) #
-        for j in range(n-1):
-            # Смещение стадийной касательной z #
-            # Система нелинейных уравнений F(z)=0 #
-            def F(z):
+        # Параметры метода #
+        self.a, self.b, self.c, self.s = a, b, c, len(b)
+    # Инициализация задачи #
+    def init_problem(self, f, y0, t0, tn):
+        # Параметры задачи #
+        self.f, self.y0, self.t0, self.tn = f, y0, t0, tn
+    # Итериция неявного метода #
+    def implicit(self, df, tj, yj, dt):
+        a, b, c, s = self.a, self.b, self.c, self.s
+        f = self.f
+        def F(z):
                 f_ = np.array([z[i] for i in range(s)], dtype=np.float64)
-                # Итерация по стадиям (i) #
                 for i in range(s):
-                    # Итерация по всем (т.к. неявный метод) стадиям (l) #
                     for l in range(s):
-                        f_[i] -= dt * a[i,l] * f(t[j] + dt * c[l],y[j] + z[l])
+                        f_[i] -= dt * a[i,l] * f(tj + dt * c[l],yj + z[l])
                 return f_
-            # Якобиан F(z) #
-            def J(z):
-                j_ = np.identity(s, dtype=np.float64)
-                # Итерация по стадиям (i) #
-                for i in range(s):
-                    # Итерация по всем (т.к. неявный метод) стадиям (l) #
-                    for l in range(s):
-                        j_[i][l] -= dt * a[i,l] * df(t[j] + dt * c[i],y[j] + z[l])
-                return j_
-            # Начальное приближение z0 #
-            z0 =  np.array([np.zeros_like(y0) for _ in range(s)], dtype=np.float64)
-            # Метод Ньютона #
-            z = newton(F, J, z0)
-            # Смещение приближенного значения #
-            dy = np.zeros_like(y0, dtype=np.float64)
-            # Итерация по стадиям (i) #
+        def J(z):
+            j_ = np.identity(s, dtype=np.float64)
             for i in range(s):
-                dy += dt * b[i] * f(t[j] + dt * c[i],y[j] + z[i])
-            y.append(y[j] + dy)
+                for l in range(s):
+                    j_[i][l] -= dt * a[i,l] * df(tj + dt * c[i],yj + z[l])
+            return j_
+        z0 =  np.array([np.zeros_like(yj) for _ in range(s)], dtype=np.float64)
+        z = newton(F, J, z0)
+        dy = np.zeros_like(yj, dtype=np.float64)
+        for i in range(s):
+            dy += dt * b[i] * f(tj + dt * c[i],yj + z[i])
+        return dy
+    # Решение задачи #
+    def __call__(self, df, dt):
+        y0, t0, tn = self.y0, self.t0, self.tn
+        t, y = [t0], [y0]
+        while(t[-1] < tn):
+            tj, yj = t[-1], y[-1]
+            dy = self.implicit(df, tj, yj, dt)
+            t.append(tj + dt)
+            y.append(yj + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
     
 def plot_R(a, b):

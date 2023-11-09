@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 # Явный метод Рунге-Кутты #
 class rungekutta:
     # Инициальизация метода #
-    def __init__(self, a, b, c):
+    def __init__(self, a, b, c, p):
         # Параметры метода #
-        self.a, self.b, self.c, self.s = a, b, c, len(b)
+        self.a, self.b, self.c, self.s, self.p = a, b, c, len(b), p
     # Инициализация задачи #
     def init_problem(self, f, y0, t0, tn, df=None):
         # Параметры задачи #
@@ -66,9 +66,8 @@ class rungekutta:
             if err <= tol:
                 t.append(tj + dt)
                 y.append(yj + dy_)
-                dt = min(1.2*dt, abs(tn-t0))
+                dt = min(dt*min(5.0, max(5.e-4, 0.8*(tol/err)**(1/(self.p)))), abs(tn-t0))
             else: dt = dt_
-
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
     
 def plot_R(a, b):

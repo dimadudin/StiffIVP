@@ -5,15 +5,15 @@ from numpy.linalg import det
 import matplotlib.pyplot as plt
 
 # Явный метод Рунге-Кутты #
-class explicit_rk:
+class rungekutta:
     # Инициальизация метода #
     def __init__(self, a, b, c):
         # Параметры метода #
         self.a, self.b, self.c, self.s = a, b, c, len(b)
     # Инициализация задачи #
-    def init_problem(self, f, y0, t0, tn):
+    def init_problem(self, f, y0, t0, tn, df=None):
         # Параметры задачи #
-        self.f, self.y0, self.t0, self.tn = f, y0, t0, tn
+        self.f, self.y0, self.t0, self.tn, self.df = f, y0, t0, tn, df
     # Итериция явного метода #
     def explicit(self, tj, yj, dt):
         a, b, c, s = self.a, self.b, self.c, self.s
@@ -27,32 +27,10 @@ class explicit_rk:
             k[i] = f(tj + dt * c[i],yj + zi)
             dy += dt * b[i] * k[i]
         return dy
-    # Решение задачи #
-    def __call__(self, dt):
-        y0, t0, tn = self.y0, self.t0, self.tn
-        t, y = [t0], [y0]
-        while(t[-1] < tn):
-            tj, yj = t[-1], y[-1]
-            dy = self.explicit(tj, yj, dt)
-            t.append(tj + dt)
-            y.append(yj + dy)
-        return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
-
-
-# Неявный метод Рунге-Кутты #
-class implicit_rk:
-   # Инициальизация метода #
-    def __init__(self, a, b, c):
-        # Параметры метода #
-        self.a, self.b, self.c, self.s = a, b, c, len(b)
-    # Инициализация задачи #
-    def init_problem(self, f, y0, t0, tn):
-        # Параметры задачи #
-        self.f, self.y0, self.t0, self.tn = f, y0, t0, tn
     # Итериция неявного метода #
-    def implicit(self, df, tj, yj, dt):
+    def implicit(self, tj, yj, dt):
         a, b, c, s = self.a, self.b, self.c, self.s
-        f = self.f
+        f, df = self.f, self.df
         def F(z):
                 f_ = np.array([z[i] for i in range(s)], dtype=np.float64)
                 for i in range(s):
@@ -72,12 +50,14 @@ class implicit_rk:
             dy += dt * b[i] * f(tj + dt * c[i],yj + z[i])
         return dy
     # Решение задачи #
-    def __call__(self, df, dt):
+    def __call__(self, dt, iterm="explicit"):
         y0, t0, tn = self.y0, self.t0, self.tn
         t, y = [t0], [y0]
         while(t[-1] < tn):
             tj, yj = t[-1], y[-1]
-            dy = self.implicit(df, tj, yj, dt)
+            if iterm == "explicit": dy = self.explicit(tj, yj, dt)
+            elif iterm == "implicit": dy = self.implicit(tj, yj, dt)
+            else: return ("kys","fag")
             t.append(tj + dt)
             y.append(yj + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))

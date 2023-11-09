@@ -1,7 +1,7 @@
 # Реализация и отображение решения данных задач #
 import numpy as np
 import matplotlib.pyplot as plt
-from numerical_ode import rungekutta, plot_R
+from numerical_ode import rungekutta
 
 if __name__ == "__main__":
     # # Решение тестового уравнения явным методом Рунге-Кутта #
@@ -12,7 +12,8 @@ if __name__ == "__main__":
     p = 3.
     ex_rk3 = rungekutta(a, b, c, p)
     # Отображение графика оператора перехода и области стабильности метода #
-    plot_R(a, b)
+    ex_rk3.plot_R()
+    ex_rk3.plot_P()
     # Параметры задачи #
     t0, tn = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)

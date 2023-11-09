@@ -69,41 +69,48 @@ class rungekutta:
                 dt = min(dt*min(5.0, max(5.e-4, 0.8*(tol/err)**(1/(self.p)))), abs(tn-t0))
             else: dt = dt_
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
-    
-def plot_R(a, b):
-    x = np.linspace(-3,3,121)
-    y = np.linspace(-3,3,121)
-    X,Y = np.meshgrid(x,y)
-
-    R = np.identity(len(x), dtype=np.float64)
-    P = np.zeros(len(x), dtype=np.float64)
-
-    for i in range(len(x)):
-        for j in range(len(y)):
+    # Отображение области устойчивости метода #
+    def plot_R(self, x=np.linspace(-3,3,121), y=np.linspace(-3,3,121)):
+        a, b = self.a, self.b
+        newparams = {'axes.grid': True,
+                'lines.markersize': 8, 'lines.linewidth': 2,
+                'font.size': 14}
+        plt.rcParams.update(newparams)
+        X,Y = np.meshgrid(x,y)
+        r_ = np.identity(len(x), dtype=np.float64)
+        for i in range(len(x)):
+            for j in range(len(y)):
+                E = np.identity(len(a), dtype=np.float64)
+                EzA = E - (x[i]+y[j]*1j) * a
+                delta = det(EzA)
+                delta1 = det(EzA + (x[i]+y[j]*1j)
+                                * np.outer(np.ones(len(b)), b))
+                r_[j][i] = abs(delta1/delta)
+        plt.figure()
+        plt.contourf(X,Y,r_, 1, levels = [0,1])
+        plt.contour(X,Y,r_, 1, colors = 'black', levels = [1])
+        plt.plot([min(x),max(x)],[0,0], 'k--')
+        plt.plot([0,0],[min(y),max(y)], 'k--')
+        plt.xlabel('Re(z)')
+        plt.ylabel('Im(z)')
+        plt.show()
+    # Отображение оператора перехода метода #
+    def plot_P(self, x=np.linspace(-3,3,121)):
+        a, b = self.a, self.b
+        newparams = {'axes.grid': True,
+                'lines.markersize': 8, 'lines.linewidth': 2,
+                'font.size': 14}
+        plt.rcParams.update(newparams)
+        p_ = np.zeros(len(x), dtype=np.float64)
+        for i in range(len(x)):
             E = np.identity(len(a), dtype=np.float64)
-            EzA = E - (x[i]+y[j]*1j) * a
+            EzA = E - x[i] * a
             delta = det(EzA)
-            delta1 = det(EzA + (x[i]+y[j]*1j)
-                            * np.outer(np.ones(len(b)), b))
-            if y[j] == 0.:
-                P[i] = delta1/delta
-            R[j][i] = abs(delta1/delta)
-
-    plt.figure()
-    plt.plot(x, P)
-    plt.grid()
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.show()
-
-    plt.figure()
-    plt.contourf(X,Y,R, 1, levels = [0,1])
-    plt.contour(X,Y,R, 1, colors = 'black', levels = [1])
-
-    plt.plot([min(x),max(x)],[0,0], 'k--')
-    plt.plot([0,0],[min(y),max(y)], 'k--')
- 
-    plt.grid()
-    plt.xlabel('Re(z)')
-    plt.ylabel('Im(z)')
-    plt.show()
+            delta1 = det(EzA + x[i] * np.outer(np.ones(len(b)), b))
+            p_[i] = delta1/delta
+        plt.figure()
+        plt.plot(x, p_)
+        plt.xlabel('x')
+        plt.ylabel('P(x)')
+        plt.show()
+    

@@ -63,12 +63,12 @@ class rungekutta:
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
     
 def plot_R(a, b):
-    x = np.linspace(-3,3,100)
-    y = np.linspace(-3,3,100)
+    x = np.linspace(-3,3,121)
+    y = np.linspace(-3,3,121)
     X,Y = np.meshgrid(x,y)
 
     R = np.identity(len(x), dtype=np.float64)
-    P = np.identity(len(x), dtype=np.float64)
+    P = np.zeros(len(x), dtype=np.float64)
 
     for i in range(len(x)):
         for j in range(len(y)):
@@ -77,7 +77,8 @@ def plot_R(a, b):
             delta = det(EzA)
             delta1 = det(EzA + (x[i]+y[j]*1j)
                             * np.outer(np.ones(len(b)), b))
-            P[j][i] = delta1/delta
+            if y[j] == 0.:
+                P[i] = delta1/delta
             R[j][i] = abs(delta1/delta)
 
     plt.figure()

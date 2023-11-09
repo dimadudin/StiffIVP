@@ -11,7 +11,7 @@ if __name__ == "__main__":
     c = np.array([0,1/2,1], dtype=np.float64)
     ex_rk3 = rungekutta(a, b, c)
     # Отображение графика оператора перехода и области стабильности метода #
-    # plot_R(a, b)
+    plot_R(a, b)
     # Параметры задачи #
     t0, tn = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     c = np.array([1/3,1], dtype=np.float64)
     im_rk3 = rungekutta(a, b, c)
     # Отображение графика оператора перехода и области стабильности метода #
-    # plot_R(a, b)
+    plot_R(a, b)
     # Параметры задачи #
     t0, tn = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)

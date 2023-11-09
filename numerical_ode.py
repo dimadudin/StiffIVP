@@ -82,10 +82,10 @@ def plot_R(a, b):
             R[j][i] = abs(delta1/delta)
 
     plt.figure()
-    plt.plot(P)
+    plt.plot(x, P)
     plt.grid()
-    plt.xlabel('Re(z)')
-    plt.ylabel('Im(z)')
+    plt.xlabel('x')
+    plt.ylabel('y')
     plt.show()
 
     plt.figure()

@@ -78,6 +78,7 @@ class rungekutta:
         plt.rcParams.update(newparams)
         X,Y = np.meshgrid(x,y)
         r_ = np.identity(len(x), dtype=np.float64)
+        interval = []
         for i in range(len(x)):
             for j in range(len(y)):
                 E = np.identity(len(a), dtype=np.float64)
@@ -86,7 +87,10 @@ class rungekutta:
                 delta1 = det(EzA + (x[i]+y[j]*1j)
                                 * np.outer(np.ones(len(b)), b))
                 r_[j][i] = abs(delta1/delta)
+                if y[j] == 0. and r_[j][i] <= 1.:
+                    interval.append(x[i])
         plt.figure()
+        plt.plot(interval, np.zeros(len(interval)), 'r-', lw=4)
         plt.contourf(X,Y,r_, 1, levels = [0,1])
         plt.contour(X,Y,r_, 1, colors = 'black', levels = [1])
         plt.plot([min(x),max(x)],[0,0], 'k--')

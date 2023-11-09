@@ -113,4 +113,17 @@ class rungekutta:
         plt.xlabel('x')
         plt.ylabel('P(x)')
         plt.show()
-    
+    # Отображение решения #
+    def plot_Y(self, t, y):
+        newparams = {'axes.grid': True,
+                'lines.markersize': 8, 'lines.linewidth': 2,
+                'font.size': 14}
+        plt.rcParams.update(newparams)
+        plt.figure()
+        for i in range(len(y[0])):
+            aaaaaaaaaaaaaa = y[:,i]
+            plt.plot(t, y[:,i], marker='.', label=f'$y_{i+1}$')
+        plt.xlabel("$t$")
+        plt.ylabel("$y$")
+        plt.legend(loc='best', frameon=False)
+        plt.show()

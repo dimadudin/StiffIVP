@@ -23,26 +23,21 @@ if __name__ == "__main__":
     # Решение заданной задачи инициализированным методом #
     t, y = ex_rk3(0.01, "explicit")
     # Отображение решения #
-    plt.figure(layout="constrained")
-    plt.plot(t, y, "r-", marker='o', lw=6, alpha=0.6,label="$y$", markersize="4")
-    plt.plot(t, y_ex(t), "b-", marker='.', lw=2, alpha=1,label="$y_t$", markersize="4")
-    plt.grid(True)
-    plt.xlabel("$t$")
-    plt.ylabel("$y$")
-    plt.legend(loc='best', frameon=False)
-    plt.show()
+    ex_rk3.plot_Y(t, y)
     # Отображение изменения временных шагов #
 
-    # # Мета данные процесса приближения #
+    # Мета данные процесса приближения #
 
     # # Решение тестового уравнения неявным методом Рунге-Кутта #
     # # метод Радо IIA с адаптивным временным шагом #
     # a = np.array([[5/12,-1/12],[3/4,1/4]], dtype=np.float64)
     # b = np.array([3/4,1/4], dtype=np.float64)
     # c = np.array([1/3,1], dtype=np.float64)
-    # im_rk3 = rungekutta(a, b, c)
+    # p =3.
+    # im_rk3 = rungekutta(a, b, c, p)
     # # Отображение графика оператора перехода и области стабильности метода #
-    # plot_R(a, b)
+    # im_rk3.plot_R()
+    # im_rk3.plot_P()
     # # Параметры задачи #
     # t0, tn = 0, 1
     # y0 = np.array([-0.5], dtype=np.float64)
@@ -53,14 +48,7 @@ if __name__ == "__main__":
     # # Решение заданной задачи инициализированным методом #
     # t, y = im_rk3(0.01, "implicit")
     # # Отображение решения #
-    # plt.figure(layout="constrained")
-    # plt.plot(t, y, "r-", marker='o', lw=6, alpha=0.6,label="$y$", markersize="4")
-    # plt.plot(t, y_ex(t), "b-", marker='.', lw=2, alpha=1,label="$y_t$", markersize="4")
-    # plt.grid(True)
-    # plt.xlabel("$t$")
-    # plt.ylabel("$y$")
-    # plt.legend(loc='best', frameon=False)
-    # plt.show()
+    # im_rk3.plot_Y(t, y)
     # # Отображение изменения временных шагов #
 
     # # Мета данные процесса приближения #
@@ -73,7 +61,8 @@ if __name__ == "__main__":
     # p = 3.
     # im_rk3 = rungekutta(a, b, c, p)
     # # Отображение графика оператора перехода и области стабильности метода #
-    # plot_R(a, b)
+    # im_rk3.plot_R()
+    # im_rk3.plot_P()
     # # Параметры задачи #
     # t0, tn = 0, 5
     # y0 = np.array([1,0,0], dtype=np.float64)
@@ -90,15 +79,7 @@ if __name__ == "__main__":
     # # Решение заданной задачи инициализированным методом #
     # t, y = im_rk3(0.0006, "implicit")
     # # Отображение решения #
-    # plt.figure(layout="constrained")
-    # plt.plot(t, y[:,0], "r-", marker='.', lw=2, alpha=0.6,label="$y_1$", markersize="4")
-    # plt.plot(t, y[:,1], "b-", marker='.', lw=2, alpha=0.6,label="$y_2$", markersize="4")
-    # plt.plot(t, y[:,2], "g-", marker='.', lw=2, alpha=0.6, label="$y_3$", markersize="4")
-    # plt.grid(True)
-    # plt.xlabel("$t$")
-    # plt.ylabel("$y$")
-    # plt.legend(loc='best', frameon=False)
-    # plt.show()
+    # im_rk3.plot_Y(t, y)
     # # Отображение изменения временных шагов #
 
     # # Мета данные процесса приближения #

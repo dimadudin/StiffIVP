@@ -1,7 +1,7 @@
 from numpy.linalg import solve, norm
 import numpy as np
 
-def fixedpoint(g, x0, tol=1.e-5, maxit=10):
+def fixedpoint(g, x0, tol=1.e-3, maxit=10):
     x = x0
     # for _ in range(maxit):
     #     x_old = x
@@ -9,7 +9,7 @@ def fixedpoint(g, x0, tol=1.e-5, maxit=10):
     #     if abs(x-x_old) < tol: break
     return x
 
-def newton(f, j, x0, tol = 1.e-5, maxit=10):
+def newton(f, j, x0, tol = 1.e-3, maxit=10):
     x = x0
     for _ in range(maxit):
         fx = f(x)
@@ -20,7 +20,7 @@ def newton(f, j, x0, tol = 1.e-5, maxit=10):
     return x
 
 
-def constJnewton(F, J, x0, tol = 1.e-5, max_iter=10):
+def constJnewton(F, J, x0, tol = 1.e-3, max_iter=10):
     x = x0
     # Jx = J(x)
     # for _ in range(max_iter):

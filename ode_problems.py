@@ -15,9 +15,11 @@ def rk3_test(method='rkm3', tol=1e-3):
     f = lambda t,y: np.exp(y)*(1+t)
     df = lambda t,y: np.exp(y)*(1+t)
     rk.init_problem(f, y0, t0, tn, df)
+    # Задание уровня точности #
+    rk.set_tol(tol)
     st = time.time()
     # Решение заданной задачи инициализированным методом #
-    t, y = rk(tol)
+    t, y = rk()
     et = time.time()
     print(f'Время выполнения алгоритма = {et-st} секунд')
     # Отображение решения #
@@ -44,9 +46,11 @@ def robertson(method='rkm3', tol=1e-3):
                           0.04 - 1e4*y[2] - 6e7*y[1] - 1e4*y[1] +
                              0 +            6e7*y[1] +        0], dtype=np.float64)
     rk.init_problem(f, y0, t0, tn, df)
+    # Задание уровня точности #
+    rk.set_tol(tol)
     st = time.time()
     # Решение заданной задачи инициализированным методом #
-    t, y = rk(tol)
+    t, y = rk()
     et = time.time()
     print(f'Время выполнения алгоритма = {et-st} секунд')
     # Отображение решения #
@@ -73,9 +77,11 @@ def brunner(method='rkm3', tol=1e-3):
                           1e3*y[1]                      - 1e3*y[0] +          0 -
                                      2.5e3*y[2]                    - 2.5e3*y[0]], dtype=np.float64)
     rk.init_problem(f, y0, t0, tn, df)
+    # Задание уровня точности #
+    rk.set_tol(tol)
     st = time.time()
     # Решение заданной задачи инициализированным методом #
-    t, y = rk(tol)
+    t, y = rk()
     et = time.time()
     print(f'Время выполнения алгоритма = {et-st} секунд')
     # Отображение решения #

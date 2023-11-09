@@ -14,6 +14,8 @@ class rungekutta:
     def init_problem(self, f, y0, t0, tn, df=None):
         # Параметры задачи #
         self.f, self.y0, self.t0, self.tn, self.df = f, y0, t0, tn, df
+    def set_tol(self, tol=1e-3):
+        self.tol = tol
     # Итериция явного метода #
     def explicit(self, tj, yj, dt):
         a, b, c, s = self.a, self.b, self.c, self.s
@@ -50,8 +52,9 @@ class rungekutta:
             dy += dt * b[i] * f(tj + dt * c[i],yj + z[i])
         return dy
     # Решение задачи #
-    def __call__(self, tol=1e-3):
+    def __call__(self):
         y0, t0, tn = self.y0, self.t0, self.tn
+        tol = self.tol
         if self.a[0][0] == 0.: method = self.explicit
         else: method = self.implicit
         dt = tol**(1/self.p)

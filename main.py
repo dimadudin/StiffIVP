@@ -13,13 +13,14 @@ if __name__ == "__main__":
     # Отображение графика оператора перехода и области стабильности метода #
     plot_R(a, b)
     # Параметры задачи #
-    t0, T = 0, 1
+    t0, tn = 0, 1
     y0 = np.array([-0.5], dtype=np.float64)
     f = lambda t,y: np.exp(y)*(1+t)
+    ex_rk3.init_problem(f, y0, t0, tn)
     y_ex = lambda t: -np.log(np.exp(0.5) - t - t**2/2)
     n = 100
     # Решение заданной задачи инициализированным методом #
-    t, y = ex_rk3(f, y0, t0, T, n)
+    t, y = ex_rk3(n)
     # Отображение решения #
     plt.figure(layout="constrained")
     plt.plot(t, y, "r-", marker='o', lw=6, alpha=0.6,label="$y$", markersize="4")

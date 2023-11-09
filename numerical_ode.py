@@ -7,10 +7,14 @@ import matplotlib.pyplot as plt
 # Явный метод Рунге-Кутты #
 class explicit_rk:
     def __init__(self, a, b, c):
-        # Таблица Бутчера #
+        # Параметры метода #
         self.a, self.b, self.c, self.s = a, b, c, len(b)
-    def explicit(self, tj, yj, f, dt):
+    def init_problem(self, f, y0, t0, tn):
+        # Параметры задачи #
+        self.f, self.y0, self.t0, self.tn = f, y0, t0, tn
+    def explicit(self, tj, yj, dt):
         a, b, c, s = self.a, self.b, self.c, self.s
+        f = self.f
         # Смещение стадийной касательной #
         k = np.array([np.zeros_like(yj, dtype=np.float64) for _ in range(s)], dtype=np.float64)
         # Смещение приближенного значения #
@@ -25,14 +29,15 @@ class explicit_rk:
             dy += dt * b[i] * k[i]
         return dy
 
-    def __call__(self, f, y0, t0, T, n):
+    def __call__(self, n):
+        y0, t0, tn = self.y0, self.t0, self.tn
         # Временная сетка #
-        t, dt = np.linspace(t0, T, n, retstep=True)
+        t, dt = np.linspace(t0, tn, n, retstep=True)
         # Приближенные значения в узлах сетки #
         y = [y0]
         # Итерация по временной сетке (j) #
         for j in range(n-1):
-            dy = self.explicit(t[j], y[j], f, dt)
+            dy = self.explicit(t[j], y[j], dt)
             y.append(y[j] + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
 

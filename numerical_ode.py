@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 class explicit_rk:
     def __init__(self, a, b, c):
         # Таблица Бутчера #
-        self.a, self.b, self.c = a, b, c
-    def explicit(self, tj, yj, f, dt, s):
-        a, b, c = self.a, self.b, self.c
+        self.a, self.b, self.c, self.s = a, b, c, len(b)
+    def explicit(self, tj, yj, f, dt):
+        a, b, c, s = self.a, self.b, self.c, self.s
         # Смещение стадийной касательной #
         k = np.array([np.zeros_like(yj, dtype=np.float64) for _ in range(s)], dtype=np.float64)
         # Смещение приближенного значения #
@@ -26,17 +26,13 @@ class explicit_rk:
         return dy
 
     def __call__(self, f, y0, t0, T, n):
-        # Таблица Бутчера #
-        a, b, c = self.a, self.b, self.c
         # Временная сетка #
         t, dt = np.linspace(t0, T, n, retstep=True)
         # Приближенные значения в узлах сетки #
         y = [y0]
-        # Количество стадий #
-        s = len(b)
         # Итерация по временной сетке (j) #
         for j in range(n-1):
-            dy = self.explicit(t[j], y[j], f, dt, s)
+            dy = self.explicit(t[j], y[j], f, dt)
             y.append(y[j] + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
 

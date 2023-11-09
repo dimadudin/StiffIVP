@@ -50,7 +50,7 @@ class rungekutta:
             dy += dt * b[i] * f(tj + dt * c[i],yj + z[i])
         return dy
     # Решение задачи #
-    def __call__(self, dt, iterm="explicit", tol=1e-5):
+    def __call__(self, dt, iterm="explicit", tol=1e-3):
         y0, t0, tn = self.y0, self.t0, self.tn
         if iterm == "explicit": method = self.explicit
         elif iterm == "implicit": method = self.implicit

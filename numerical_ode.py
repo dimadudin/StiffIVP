@@ -29,16 +29,15 @@ class explicit_rk:
             dy += dt * b[i] * k[i]
         return dy
 
-    def __call__(self, n):
+    def __call__(self, dt):
         y0, t0, tn = self.y0, self.t0, self.tn
-        # Временная сетка #
-        t, dt = np.linspace(t0, tn, n, retstep=True)
-        # Приближенные значения в узлах сетки #
-        y = [y0]
+        t, y = [t0], [y0]
         # Итерация по временной сетке (j) #
-        for j in range(n-1):
-            dy = self.explicit(t[j], y[j], dt)
-            y.append(y[j] + dy)
+        while(t[-1] < tn):
+            tj, yj = t[-1], y[-1]
+            dy = self.explicit(tj, yj, dt)
+            t.append(tj + dt)
+            y.append(yj + dy)
         return (np.array(t, dtype=np.float64), np.array(y, dtype=np.float64))
 
 

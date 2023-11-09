@@ -18,9 +18,8 @@ if __name__ == "__main__":
     f = lambda t,y: np.exp(y)*(1+t)
     ex_rk3.init_problem(f, y0, t0, tn)
     y_ex = lambda t: -np.log(np.exp(0.5) - t - t**2/2)
-    n = 100
     # Решение заданной задачи инициализированным методом #
-    t, y = ex_rk3(n)
+    t, y = ex_rk3(0.01)
     # Отображение решения #
     plt.figure(layout="constrained")
     plt.plot(t, y, "r-", marker='o', lw=6, alpha=0.6,label="$y$", markersize="4")

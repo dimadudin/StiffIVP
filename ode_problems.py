@@ -1,8 +1,8 @@
 from numerical_ode import rungekutta
 import numpy as np
-import time
+from time import process_time
 # Решение тестового уравнения явным методом Рунге-Кутта #
-def solve_ode(problem= 'test', method='rkm3', tol=1e-3, dtmin=5.e-6, dtmax=10.0):
+def solve_ode(problem= 'test', method='rkm3', tol=1e-3, dtmin=5.e-10, dtmax=10.0):
     # Параметры метода #
     mp = butcher_tables[method]
     rk = rungekutta(mp['a'], mp['b'], mp['c'], mp['p'])
@@ -14,10 +14,10 @@ def solve_ode(problem= 'test', method='rkm3', tol=1e-3, dtmin=5.e-6, dtmax=10.0)
     rk.init_problem(pp['f'], pp['y0'], pp['t0'], pp['tn'], pp['df'])
     # Параметры итерации #
     rk.init_iter(tol, dtmin, dtmax)
-    st = time.time()
+    st = process_time()
     # Решение заданной задачи инициализированным методом #
     t, y = rk()
-    et = time.time()
+    et = process_time()
     print(f'Время выполнения алгоритма = {et-st} секунд')
     # Отображение решения #
     rk.plot_Y(t, y)

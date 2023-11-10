@@ -67,7 +67,7 @@ class rungekutta:
             dt_ = 0.5 * dt
             dy_ = method(tj, yj, dt_)
             dy_ += method(tj + dt_, yj + dy_, dt_)
-            err = norm(dy - dy_)
+            err = norm(dy - dy_, np.inf)
             if err <= tol:
                 t.append(tj + dt)
                 y.append(yj + dy_)
@@ -136,15 +136,16 @@ class rungekutta:
         plt.show()
     # Отображение временной сетки #
     def plot_T(self, t):
+        delta = np.diff(t)
+        print(f'Количество выполненых шагов = {len(delta)}')
+        print(f'Наименьший шаг = {min(delta)}, Наибольший шаг = {max(delta)}')
+        print(f'Средний шаг = {np.mean(delta)}')
         newparams = {'axes.grid': True,
                 'lines.markersize': 8, 'lines.linewidth': 2,
                 'font.size': 14}
         plt.rcParams.update(newparams)
         plt.figure()
-        delta = np.diff(t)
         plt.plot(delta, marker='.')
         plt.xlabel("$i$")
         plt.ylabel(f'$\Delta t$')
         plt.show()
-        print(f'Количество выполненых шагов = {len(delta)}')
-        print(f'Наименьший шаг = {min(delta)}, Наибольший шаг = {max(delta)}')
